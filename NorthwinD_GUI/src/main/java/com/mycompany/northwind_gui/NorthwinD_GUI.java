@@ -14,7 +14,7 @@ public class NorthwinD_GUI {
                 java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
             
-                  DB_AppForm mainForm = new DB_AppForm();
+                  DB_AppForm mainForm = new DB_AppForm();//main form
 
    
                 mainForm.setVisible(true);
@@ -24,3 +24,5 @@ public class NorthwinD_GUI {
 
     }
 }
+
+

@@ -83,7 +83,6 @@ public class popup_products extends javax.swing.JDialog {
 
         jPanel2.setLayout(new java.awt.GridLayout(14, 2, 5, 3));
 
-        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel16.setText("Suppliers ID:");
         jPanel2.add(jLabel16);
 
@@ -94,17 +93,14 @@ public class popup_products extends javax.swing.JDialog {
         });
         jPanel2.add(jTextField9);
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Product Code:");
         jPanel2.add(jLabel2);
         jPanel2.add(jTextField1);
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Product Name:");
         jPanel2.add(jLabel3);
         jPanel2.add(jTextField2);
 
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Description:");
         jPanel2.add(jLabel4);
 
@@ -114,17 +110,14 @@ public class popup_products extends javax.swing.JDialog {
 
         jPanel2.add(jScrollPane1);
 
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Standard Cost:");
         jPanel2.add(jLabel5);
         jPanel2.add(jTextField3);
 
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("List Price:");
         jPanel2.add(jLabel6);
         jPanel2.add(jTextField4);
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Reorder Level:");
         jPanel2.add(jLabel7);
 
@@ -135,41 +128,34 @@ public class popup_products extends javax.swing.JDialog {
         });
         jPanel2.add(jTextField5);
 
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Target Level:");
         jPanel2.add(jLabel8);
         jPanel2.add(jTextField8);
 
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setText("Quantity Per Unit:");
         jPanel2.add(jLabel15);
         jPanel2.add(jTextField6);
 
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Discontinued:");
         jPanel2.add(jLabel9);
         jPanel2.add(jCheckBox1);
 
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Minimum Reorder Quantity:");
         jPanel2.add(jLabel10);
         jPanel2.add(jTextField7);
 
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Supplier:");
         jPanel2.add(jLabel11);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel2.add(jComboBox1);
 
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Category:");
         jPanel2.add(jLabel12);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel2.add(jComboBox2);
 
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("Attachments:");
         jPanel2.add(jLabel13);
 
