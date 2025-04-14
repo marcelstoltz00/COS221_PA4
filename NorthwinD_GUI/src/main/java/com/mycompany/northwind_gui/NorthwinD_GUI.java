@@ -13,7 +13,11 @@ public class NorthwinD_GUI {
     public static void main(String[] args) {
                 java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-             new Main_Form().setVisible(true);
+            
+                  DB_AppForm mainForm = new DB_AppForm();
+
+   
+                mainForm.setVisible(true);
                
             }
         });
