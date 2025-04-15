@@ -43,6 +43,9 @@ public class popup_products extends javax.swing.JDialog {
                 }
             }
         });
+             
+            screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(screenSize); 
         
     }
     
