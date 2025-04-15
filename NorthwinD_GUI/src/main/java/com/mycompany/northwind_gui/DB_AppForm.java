@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import javax.swing.JPanel;
 /**
  *
  * @author marcelstoltz
@@ -24,32 +25,130 @@ public class DB_AppForm extends javax.swing.JFrame {
     public DB_AppForm() {
         initComponents();
        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        // Set the size of the JFrame to the screen size
         this.setSize(screenSize);
-        loadEmployeeTableData();
+    loadEmployeeTableData(false); // Or however you are calling this
+    loadProductsTableData();
+   JPanel schemaPanel = new DatabaseSchemaViewer();
+
+        // Set the layout for panel_home (if not already done in initComponents)
+        panel_home.setLayout(new java.awt.BorderLayout());
+
+        // Remove any existing components from panel_home
+        panel_home.removeAll();
+
+        // Add the schemaPanel to panel_home
+        panel_home.add(schemaPanel, java.awt.BorderLayout.CENTER);
+
+        // Update the UI to reflect the changes
+        panel_home.revalidate();
+        panel_home.repaint();
+
+        
     }
     
-private void loadEmployeeTableData() {
-        DefaultTableModel model = (DefaultTableModel) jTable5.getModel(); // Corrected to jTable1
-        model.setRowCount(0); // Clear existing rows
-        model.setColumnIdentifiers(new Object[]{ // Set the correct column headers
-                "First Name", "Last Name", "Email", "Job Title", "Address",
+ 
+    public void loadProductsTableData() { 
+    DefaultTableModel model = (DefaultTableModel) jTable2.getModel(); 
+    model.setRowCount(0);
+    model.setColumnIdentifiers(new Object[]{
+            "Product ID", "Product Code", "Product Name", "Description", "Category",
+            "Quantity Per Unit", "Standard Cost", "List Price", "Reorder Level",
+            "Target Level", "Minimum Reorder Quantity", "Discontinued", "Supplier IDs", "Attachments"
+    });
+
+    try (Connection conn = DB_Con.getConnection();
+         Statement stmt = conn.createStatement()) {
+
+        ResultSet rs = null;
+        String query = "SELECT id, product_code, product_name, description, category, quantity_per_unit, standard_cost, list_price, reorder_level, target_level, minimum_reorder_quantity, discontinued, supplier_ids, attachments FROM products"; // Selecting all relevant columns from the products table
+
+        rs = stmt.executeQuery(query);
+
+        while (rs.next()) {
+            model.addRow(new Object[]{
+                    rs.getInt("id"),
+                    rs.getString("product_code"),
+                    rs.getString("product_name"),
+                    rs.getString("description"),
+                    rs.getString("category"),
+                    rs.getString("quantity_per_unit"),
+                    rs.getDouble("standard_cost"), 
+                    rs.getDouble("list_price"),   
+                    rs.getInt("reorder_level"),
+                    rs.getInt("target_level"),
+                    rs.getInt("minimum_reorder_quantity"),
+                    rs.getBoolean("discontinued"),
+                    rs.getString("supplier_ids"),
+                    rs.getObject("attachments")
+            });
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error loading product data: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+    
+private void loadEmployeeTableData(boolean search) { // Added a boolean parameter 'search'
+        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
+        model.setRowCount(0);
+        model.setColumnIdentifiers(new Object[]{
+                "First Name", "Last Name", "Email", "Job Title", "Address Number", "Address Line 1",
                 "City", "Region", "Home Phone", "Fax Number", "Postal Code",
-                "Business Phone", "Country", "Notes", "Active" // Added headers for all selected columns
+                "Business Phone", "Country", "Notes", "Active"
         });
 
         try (Connection conn = DB_Con.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT first_name, last_name, email_address, job_title, address, city, state_province, home_phone, fax_number, zip_postal_code, business_phone, country_region, notes FROM employees")) {
+             Statement stmt = conn.createStatement()) { 
+
+            ResultSet rs = null;
+            String query = "SELECT first_name, last_name, email_address, job_title, address, city, state_province, home_phone, fax_number, zip_postal_code, business_phone, country_region, notes FROM employees";
+
+          if (search) {
+            String searchText = jTextField2.getText().trim();
+            if (!searchText.isEmpty()) {
+
+                query += " WHERE first_name LIKE '%" + searchText + "%' OR "
+                         + "last_name LIKE '%" + searchText + "%' OR "
+                         + "email_address LIKE '%" + searchText + "%' OR "
+                         + "job_title LIKE '%" + searchText + "%' OR "
+                         + "address LIKE '%" + searchText + "%' OR " // Search the combined address field
+                         + "city LIKE '%" + searchText + "%' OR "
+                         + "state_province LIKE '%" + searchText + "%' OR "
+                         + "home_phone LIKE '%" + searchText + "%' OR "
+                         + "fax_number LIKE '%" + searchText + "%' OR "
+                         + "zip_postal_code LIKE '%" + searchText + "%' OR "
+                         + "business_phone LIKE '%" + searchText + "%' OR "
+                         + "country_region LIKE '%" + searchText + "%' OR "
+                         + "notes LIKE '%" + searchText + "%'";
+
+            }
+        }
+            rs = stmt.executeQuery(query); // Execute the constructed query
 
             while (rs.next()) {
+                String fullAddress = rs.getString("address");
+                String addressNumber = "";
+                String addressLine1 = "";
+
+                if (fullAddress != null) {
+                    int firstSpaceIndex = fullAddress.indexOf(" ");
+                    if (firstSpaceIndex != -1) {
+                        addressNumber = fullAddress.substring(0, firstSpaceIndex).trim();
+                        addressLine1 = fullAddress.substring(firstSpaceIndex + 1).trim();
+                    } else {
+                        addressNumber = fullAddress.trim();
+                        addressLine1 = "";
+                    }
+                }
+
                 model.addRow(new Object[]{
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("email_address"),
                         rs.getString("job_title"),
-                        rs.getString("address"),
+                        addressNumber,
+                        addressLine1,
                         rs.getString("city"),
                         rs.getString("state_province"),
                         rs.getString("home_phone"),
@@ -58,7 +157,7 @@ private void loadEmployeeTableData() {
                         rs.getString("business_phone"),
                         rs.getString("country_region"),
                         rs.getString("notes"),
-                        "Yes" // Placeholder for active status
+                        "Yes"
                 });
             }
 
@@ -67,6 +166,8 @@ private void loadEmployeeTableData() {
             JOptionPane.showMessageDialog(this, "Error loading employee data: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,6 +191,7 @@ private void loadEmployeeTableData() {
         jLabel3 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTable5 = new javax.swing.JTable();
         panel_products = new javax.swing.JPanel();
@@ -135,10 +237,31 @@ private void loadEmployeeTableData() {
         jLabel3.setLabelFor(jComboBox1);
         jLabel3.setText("Employee Filter");
         jPanel4.add(jLabel3, java.awt.BorderLayout.PAGE_START);
+
+        jTextField2.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jTextField2InputMethodTextChanged(evt);
+            }
+        });
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
         jPanel4.add(jTextField2, java.awt.BorderLayout.CENTER);
 
-        jLabel6.setText("Search for a name or city:");
+        jLabel6.setText("Search:");
         jPanel4.add(jLabel6, java.awt.BorderLayout.LINE_START);
+
+        jButton5.setText("Search");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jButton5, java.awt.BorderLayout.LINE_END);
 
         panel_employee.add(jPanel4, java.awt.BorderLayout.PAGE_START);
 
@@ -155,7 +278,7 @@ private void loadEmployeeTableData() {
         ));
         jScrollPane5.setViewportView(jTable5);
 
-        panel_employee.add(jScrollPane5, java.awt.BorderLayout.PAGE_END);
+        panel_employee.add(jScrollPane5, java.awt.BorderLayout.CENTER);
 
         Main_Pane.addTab("Employee", panel_employee);
 
@@ -311,6 +434,18 @@ private void loadEmployeeTableData() {
     dialog.setVisible(true);        
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField2InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextField2InputMethodTextChanged
+   
+    }//GEN-LAST:event_jTextField2InputMethodTextChanged
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+  loadEmployeeTableData(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -352,6 +487,7 @@ private void loadEmployeeTableData() {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
