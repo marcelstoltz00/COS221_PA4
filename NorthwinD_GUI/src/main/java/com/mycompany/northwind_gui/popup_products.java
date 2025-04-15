@@ -28,41 +28,41 @@ public class popup_products extends javax.swing.JDialog {
     public popup_products(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize); 
-        loadComboBoxData(); 
+        Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(ss); 
+        laaiCMB_Boxes(); 
 
-        save_btn.addActionListener(evt -> loadComboBoxesAndInsertProductData()); // Use the combined function
+        save_btn.addActionListener(evt -> groot_fuknskie()); 
 
-        cancel_button.addActionListener(evt -> dispose()); // Close the popup
+        cancel_button.addActionListener(evt -> dispose()); 
         
              this.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-                if (getParent() instanceof DB_AppForm) { // Assuming your parent form class is Northwind_GUI
+                if (getParent() instanceof DB_AppForm) { 
                     ((DB_AppForm) getParent()).loadProductsTableData();
                 }
             }
         });
              
-            screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize); 
+            ss = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(ss); 
         
     }
     
-        private void loadComboBoxData() {
+        private void laaiCMB_Boxes() {
         try (Connection conn = DB_Con.getConnection();
              Statement stmt = conn.createStatement()) {
 
 
-            String categoryQuery = "SELECT DISTINCT category FROM products ORDER BY category";
-            ResultSet categoryRs = stmt.executeQuery(categoryQuery);
+            String ctgQry = "SELECT DISTINCT category FROM products ORDER BY category";
+            ResultSet kategorie = stmt.executeQuery(ctgQry);
             category_cmb.removeAllItems();
-            while (categoryRs.next()) {
-                category_cmb.addItem(categoryRs.getString("category"));
+            while (kategorie.next()) {
+                category_cmb.addItem(kategorie.getString("category"));
             }
 
-            String supplierQuery = "SELECT DISTINCT id FROM suppliers";
-            ResultSet supplierRs = stmt.executeQuery(supplierQuery);
+            String supplier_se_query = "SELECT DISTINCT id FROM suppliers";
+            ResultSet supplierRs = stmt.executeQuery(supplier_se_query);
             cmbo_supplier.removeAllItems();
             while (supplierRs.next()) {
                 cmbo_supplier.addItem(supplierRs.getString("id"));
@@ -74,11 +74,11 @@ public class popup_products extends javax.swing.JDialog {
         }
     }
         
-            private void loadComboBoxesAndInsertProductData() {
+            private void groot_fuknskie() {
         // Input Validation
-        String productCode = product_code_txt.getText().trim();
-        String productName = product_name_txt.getText().trim();
-        String description = description_txt.getText().trim();
+        String prdct_code = product_code_txt.getText().trim();
+        String prdct_name = product_name_txt.getText().trim();
+        String prdct_description = description_txt.getText().trim();
         String quantityPerUnit = qty_txt.getText().trim();
         String category = (String) category_cmb.getSelectedItem();
         String supplier = (String) cmbo_supplier.getSelectedItem(); // You might need to fetch the actual Supplier ID
@@ -87,19 +87,19 @@ public class popup_products extends javax.swing.JDialog {
 
         
         // --- Validation Checks ---
-        if (productCode.isEmpty()) {
+        if (prdct_code.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Product Code cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (productCode.length() > 25) {
+        if (prdct_code.length() > 25) {
             JOptionPane.showMessageDialog(this, "Product Code cannot exceed 25 characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (productName.isEmpty()) {
+        if (prdct_name.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Product Name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (productName.length() > 50) {
+        if (prdct_name.length() > 50) {
             JOptionPane.showMessageDialog(this, "Product Name cannot exceed 50 characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -128,15 +128,15 @@ public class popup_products extends javax.swing.JDialog {
             int targetLevel = ((Number) trgt_level.getValue()).intValue();
             int minReorderQuantity = ((Number) minimum_reorder_qty.getValue()).intValue();
 
-            // --- Database Insertion ---
+ 
             try (Connection conn = DB_Con.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(
                          "INSERT INTO products (product_code, product_name, description, category, quantity_per_unit, standard_cost, list_price, reorder_level, target_level, minimum_reorder_quantity, discontinued, supplier_ids) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-                pstmt.setString(1, productCode);
-                pstmt.setString(2, productName);
-                pstmt.setString(3, description);
-                pstmt.setString(4, category); // Assuming category name is stored directly
+                pstmt.setString(1, prdct_code);
+                pstmt.setString(2, prdct_name);
+                pstmt.setString(3, prdct_description);
+                pstmt.setString(4, category);
                 pstmt.setString(5, quantityPerUnit);
                 pstmt.setDouble(6, standardCost);
                 pstmt.setDouble(7, listPrice);
@@ -144,13 +144,13 @@ public class popup_products extends javax.swing.JDialog {
                 pstmt.setInt(9, targetLevel);
                 pstmt.setInt(10, minReorderQuantity);
                 pstmt.setBoolean(11, discontinued);
-                pstmt.setString(12, supplier); // Assuming supplier name is used as supplier_ids
+                pstmt.setString(12, supplier); 
 
                 int rowsAffected = pstmt.executeUpdate();
 
                 if (rowsAffected > 0) {
                     JOptionPane.showMessageDialog(this, "Product added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose(); // Close the popup
+                    dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -164,7 +164,7 @@ public class popup_products extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Please ensure all numeric fields are filled correctly.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
-        // Optionally, you can highlight the specific field that caused the error
+       
         
     }
 

@@ -26,32 +26,30 @@ public class DB_AppForm extends javax.swing.JFrame {
      */
     public DB_AppForm() {
         initComponents();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize);
-        loadEmployeeTableData(false); // Or however you are calling this
+        Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(ss);
+        loadEmployeeTableData(false); 
         loadProductsTableData();
         loadWarehouseReportTableData();
-        JPanel schemaPanel = new DatabaseSchemaViewer();
+        JPanel sp = new DatabaseSchemaViewer();
 
-        // Set the layout for panel_home (if not already done in initComponents)
+      
         panel_home.setLayout(new java.awt.BorderLayout());
 
-        // Remove any existing components from panel_home
+
         panel_home.removeAll();
 
-        // Add the schemaPanel to panel_home
-        panel_home.add(schemaPanel, java.awt.BorderLayout.CENTER);
 
-        // Update the UI to reflect the changes
+        panel_home.add(sp, java.awt.BorderLayout.CENTER);
         panel_home.revalidate();
         panel_home.repaint();
 
     }
 
     public void loadProductsTableData() {
-        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-        model.setRowCount(0);
-        model.setColumnIdentifiers(new Object[]{
+        DefaultTableModel m = (DefaultTableModel) jTable2.getModel();
+        m.setRowCount(0);
+        m.setColumnIdentifiers(new Object[]{
             "Product ID", "Product Code", "Product Name", "Description", "Category",
             "Quantity Per Unit", "Standard Cost", "List Price", "Reorder Level",
             "Target Level", "Minimum Reorder Quantity", "Discontinued", "Supplier IDs", "Attachments"
@@ -60,12 +58,12 @@ public class DB_AppForm extends javax.swing.JFrame {
         try (Connection conn = DB_Con.getConnection(); Statement stmt = conn.createStatement()) {
 
             ResultSet rs = null;
-            String query = "SELECT id, product_code, product_name, description, category, quantity_per_unit, standard_cost, list_price, reorder_level, target_level, minimum_reorder_quantity, discontinued, supplier_ids, attachments FROM products"; // Selecting all relevant columns from the products table
+            String sql_Query = "SELECT id, product_code, product_name, description, category, quantity_per_unit, standard_cost, list_price, reorder_level, target_level, minimum_reorder_quantity, discontinued, supplier_ids, attachments FROM products"; 
 
-            rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery(sql_Query);
 
             while (rs.next()) {
-                model.addRow(new Object[]{
+                m.addRow(new Object[]{
                     rs.getInt("id"),
                     rs.getString("product_code"),
                     rs.getString("product_name"),
@@ -91,16 +89,16 @@ public class DB_AppForm extends javax.swing.JFrame {
     }
 
     public void loadWarehouseReportTableData() {
-        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
-        model.setRowCount(0);
-        model.setColumnIdentifiers(new Object[]{
+        DefaultTableModel m = (DefaultTableModel) jTable3.getModel();
+        m.setRowCount(0);
+        m.setColumnIdentifiers(new Object[]{
             "Warehouse Name", "Product Category", "Number of Products"
         });
 
         try (Connection conn = DB_Con.getConnection(); Statement stmt = conn.createStatement()) {
 
             ResultSet rs = null;
-            String query = "SELECT "
+            String sql_Query = "SELECT "
                     + "    CASE p.category "
                     + "        WHEN 'Baked Goods & Mixes' THEN 'Bakery Storage' "
                     + "        WHEN 'Beverages' THEN 'Beverage Warehouse' "
@@ -120,7 +118,7 @@ public class DB_AppForm extends javax.swing.JFrame {
                     + "        WHEN 'Soups' THEN 'Soup Stock Warehouse' "
                     + "        WHEN 'Uncategorized' THEN 'General Storage' "
                     + "        ELSE CONCAT(p.category, ' Storage') "
-                    + // Dynamic storage name
+                    + 
                     "    END AS warehouse_name, "
                     + "    p.category AS category_name, "
                     + "    COUNT(p.id) AS number_of_products "
@@ -133,10 +131,10 @@ public class DB_AppForm extends javax.swing.JFrame {
                     + "    warehouse_name, "
                     + "    category_name;";
 
-            rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery(sql_Query);
 
             while (rs.next()) {
-                model.addRow(new Object[]{
+                m.addRow(new Object[]{
                     rs.getString("warehouse_name"),
                     rs.getString("category_name"),
                     rs.getInt("number_of_products")
@@ -149,10 +147,10 @@ public class DB_AppForm extends javax.swing.JFrame {
         }
     }
 
-    private void loadEmployeeTableData(boolean search) { // Added a boolean parameter 'search'
-        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
-        model.setRowCount(0);
-        model.setColumnIdentifiers(new Object[]{
+    private void loadEmployeeTableData(boolean search) {
+        DefaultTableModel m = (DefaultTableModel) jTable5.getModel();
+        m.setRowCount(0);
+        m.setColumnIdentifiers(new Object[]{
             "First Name", "Last Name", "Email", "Job Title", "Address Number", "Address Line 1",
             "City", "Region", "Home Phone", "Fax Number", "Postal Code",
             "Business Phone", "Country", "Notes", "Active"
@@ -161,53 +159,53 @@ public class DB_AppForm extends javax.swing.JFrame {
         try (Connection conn = DB_Con.getConnection(); Statement stmt = conn.createStatement()) {
 
             ResultSet rs = null;
-            String query = "SELECT first_name, last_name, email_address, job_title, address, city, state_province, home_phone, fax_number, zip_postal_code, business_phone, country_region, notes FROM employees";
+            String sql_Query = "SELECT first_name, last_name, email_address, job_title, address, city, state_province, home_phone, fax_number, zip_postal_code, business_phone, country_region, notes FROM employees";
 
             if (search) {
-                String searchText = jTextField2.getText().trim();
-                if (!searchText.isEmpty()) {
+                String soek_die_teks = jTextField2.getText().trim();
+                if (!soek_die_teks.isEmpty()) {
 
-                    query += " WHERE first_name LIKE '%" + searchText + "%' OR "
-                            + "last_name LIKE '%" + searchText + "%' OR "
-                            + "email_address LIKE '%" + searchText + "%' OR "
-                            + "job_title LIKE '%" + searchText + "%' OR "
-                            + "address LIKE '%" + searchText + "%' OR " // Search the combined address field
-                            + "city LIKE '%" + searchText + "%' OR "
-                            + "state_province LIKE '%" + searchText + "%' OR "
-                            + "home_phone LIKE '%" + searchText + "%' OR "
-                            + "fax_number LIKE '%" + searchText + "%' OR "
-                            + "zip_postal_code LIKE '%" + searchText + "%' OR "
-                            + "business_phone LIKE '%" + searchText + "%' OR "
-                            + "country_region LIKE '%" + searchText + "%' OR "
-                            + "notes LIKE '%" + searchText + "%'";
+                    sql_Query += " WHERE first_name LIKE '%" + soek_die_teks + "%' OR "
+                            + "last_name LIKE '%" + soek_die_teks + "%' OR "
+                            + "email_address LIKE '%" + soek_die_teks + "%' OR "
+                            + "job_title LIKE '%" + soek_die_teks + "%' OR "
+                            + "address LIKE '%" + soek_die_teks + "%' OR " 
+                            + "city LIKE '%" + soek_die_teks + "%' OR "
+                            + "state_province LIKE '%" + soek_die_teks + "%' OR "
+                            + "home_phone LIKE '%" + soek_die_teks + "%' OR "
+                            + "fax_number LIKE '%" + soek_die_teks + "%' OR "
+                            + "zip_postal_code LIKE '%" + soek_die_teks + "%' OR "
+                            + "business_phone LIKE '%" + soek_die_teks + "%' OR "
+                            + "country_region LIKE '%" + soek_die_teks + "%' OR "
+                            + "notes LIKE '%" + soek_die_teks + "%'";
 
                 }
             }
-            rs = stmt.executeQuery(query); // Execute the constructed query
+            rs = stmt.executeQuery(sql_Query); 
 
             while (rs.next()) {
-                String fullAddress = rs.getString("address");
-                String addressNumber = "";
-                String addressLine1 = "";
+                String volle_adres = rs.getString("address");
+                String adres_nommer = "";
+                String adres_lyn_1 = "";
 
-                if (fullAddress != null) {
-                    int firstSpaceIndex = fullAddress.indexOf(" ");
+                if (volle_adres != null) {
+                    int firstSpaceIndex = volle_adres.indexOf(" ");
                     if (firstSpaceIndex != -1) {
-                        addressNumber = fullAddress.substring(0, firstSpaceIndex).trim();
-                        addressLine1 = fullAddress.substring(firstSpaceIndex + 1).trim();
+                        adres_nommer = volle_adres.substring(0, firstSpaceIndex).trim();
+                        adres_lyn_1 = volle_adres.substring(firstSpaceIndex + 1).trim();
                     } else {
-                        addressNumber = fullAddress.trim();
-                        addressLine1 = "";
+                        adres_nommer = volle_adres.trim();
+                        adres_lyn_1 = "";
                     }
                 }
 
-                model.addRow(new Object[]{
+                m.addRow(new Object[]{
                     rs.getString("first_name"),
                     rs.getString("last_name"),
                     rs.getString("email_address"),
                     rs.getString("job_title"),
-                    addressNumber,
-                    addressLine1,
+                    adres_nommer,
+                    adres_lyn_1,
                     rs.getString("city"),
                     rs.getString("state_province"),
                     rs.getString("home_phone"),
@@ -510,13 +508,13 @@ public class DB_AppForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        popup_products dialog = new popup_products(this, true); //popup page 
+        popup_products d = new popup_products(this, true);
 
-        dialog.setLocationRelativeTo(this);
+        d.setLocationRelativeTo(this);
 
-        dialog.setVisible(true);
+        d.setVisible(true);
 
-        // loadProductTableData(); // Example method name
+        // loadProductTableData(); 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -524,19 +522,19 @@ public class DB_AppForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Client_Update_Create dialog = new Client_Update_Create(); //popup page 
+        Client_Update_Create d = new Client_Update_Create();
 
-        dialog.setLocationRelativeTo(this);
+        d.setLocationRelativeTo(this);
 
-        dialog.setVisible(true);
+        d.setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Client_Update_Create dialog = new Client_Update_Create();
+        Client_Update_Create d = new Client_Update_Create();
 
-        dialog.setLocationRelativeTo(this);
+        d.setLocationRelativeTo(this);
 
-        dialog.setVisible(true);
+        d.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -566,19 +564,11 @@ public class DB_AppForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Main_PaneComponentShown
 
     private void panel_homeComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_panel_homeComponentShown
-        // TODO add your handling code here:
-        JPanel schemaPanel = new DatabaseSchemaViewer();
 
-        // Set the layout for panel_home (if not already done in initComponents)
+        JPanel scm = new DatabaseSchemaViewer();
         panel_home.setLayout(new java.awt.BorderLayout());
-
-        // Remove any existing components from panel_home
         panel_home.removeAll();
-
-        // Add the schemaPanel to panel_home
-        panel_home.add(schemaPanel, java.awt.BorderLayout.CENTER);
-
-        // Update the UI to reflect the changes
+        panel_home.add(scm, java.awt.BorderLayout.CENTER);
         panel_home.revalidate();
         panel_home.repaint();
 

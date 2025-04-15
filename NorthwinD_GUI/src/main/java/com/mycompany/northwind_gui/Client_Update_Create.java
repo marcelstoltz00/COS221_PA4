@@ -18,10 +18,10 @@ public class Client_Update_Create extends javax.swing.JFrame {
      */
     public Client_Update_Create() {
         initComponents();
-           Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+           Dimension zz = Toolkit.getDefaultToolkit().getScreenSize();
 
-        // Set the size of the JFrame to the screen size
-        this.setSize(screenSize);
+    
+        this.setSize(zz);
     }
 
     /**

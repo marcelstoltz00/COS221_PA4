@@ -16,32 +16,32 @@ import java.sql.SQLException;
 public class DatabaseSchemaViewer extends JPanel {
 
     public DatabaseSchemaViewer() {
-        // Apply UIManager properties to customize the JTree appearance
+
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Optional: Set a Look and Feel
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 
-        // Customize JTree properties using UIManager
-        UIManager.put("Tree.rowHeight", 30); // Increase row height
-        UIManager.put("Tree.selectionBackground", new Color(200, 230, 255)); // Light blue selection
+    
+        UIManager.put("Tree.rowHeight", 30); 
+        UIManager.put("Tree.selectionBackground", new Color(200, 230, 255)); 
         UIManager.put("Tree.selectionForeground", Color.BLACK);
-        UIManager.put("Tree.lineStyle", "Angled"); // Use angled lines
-        UIManager.put("Tree.hash", Color.BLUE); // Set the color of the lines
-        UIManager.put("Tree.background", Color.WHITE); // Set the background color of the tree
-        UIManager.put("Tree.foreground", Color.BLACK); // Set the text color of the tree
-        UIManager.put("Tree.font", new Font("SansSerif", Font.PLAIN, 14)); // Set the font
+        UIManager.put("Tree.lineStyle", "Angled"); 
+        UIManager.put("Tree.hash", Color.BLUE); 
+        UIManager.put("Tree.background", Color.WHITE); 
+        UIManager.put("Tree.foreground", Color.BLACK); 
+        UIManager.put("Tree.font", new Font("SansSerif", Font.PLAIN, 14)); 
 
-        // You can set default icons if you want (replace with your icon paths)
-        try {
-            UIManager.put("Tree.openIcon", new ImageIcon(getClass().getResource("/icons/folder_open.png")));
-            UIManager.put("Tree.closedIcon", new ImageIcon(getClass().getResource("/icons/folder_closed.png")));
-            UIManager.put("Tree.leafIcon", new ImageIcon(getClass().getResource("/icons/document.png")));
-        } catch (Exception e) {
-            System.err.println("Error loading icons: " + e.getMessage());
-            // Handle the case where icons are not found
-        }
+    
+//        try {
+//            UIManager.put("Tree.openIcon", new ImageIcon(getClass().getResource("/icons/folder_open.png")));
+//            UIManager.put("Tree.closedIcon", new ImageIcon(getClass().getResource("/icons/folder_closed.png")));
+//            UIManager.put("Tree.leafIcon", new ImageIcon(getClass().getResource("/icons/document.png")));
+//        } catch (Exception e) {
+//            System.err.println("Error loading icons: " + e.getMessage());
+//
+//        }
 
 
         setLayout(new java.awt.BorderLayout());
@@ -51,29 +51,29 @@ public class DatabaseSchemaViewer extends JPanel {
     }
 
     private JTree createDatabaseSchemaTree() {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Northwind Database"); // Your database name
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Northwind Database"); 
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
 
         try (Connection conn = DB_Con.getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
 
-            // Get all tables
+ 
             ResultSet tables = metaData.getTables("u24566552_u24564584_northwind", null, "%", new String[]{"TABLE"});
             while (tables.next()) {
                 String tableName = tables.getString("TABLE_NAME");
-                System.out.println("Table: " + tableName); // Added logging
+             
                 DefaultMutableTreeNode tableNode = new DefaultMutableTreeNode(tableName);
                 root.add(tableNode);
 
-                // Get columns for each table
+       
                 ResultSet columns = metaData.getColumns("u24566552_u24564584_northwind", null, tableName, "%");
                 while (columns.next()) {
                     String columnName = columns.getString("COLUMN_NAME");
                     String columnType = columns.getString("TYPE_NAME");
-                    System.out.println("  Column: " + columnName + " (" + columnType + ")"); // Added logging
+                 
                     tableNode.add(new DefaultMutableTreeNode(columnName + " (" + columnType + ")"));
                 }
-                System.out.println("--- End of Columns for Table: " + tableName + " ---"); // Added logging
+            
             }
 
         } catch (SQLException e) {
@@ -84,5 +84,5 @@ public class DatabaseSchemaViewer extends JPanel {
         return new JTree(treeModel);
     }
 
-    // You would then add an instance of this panel to your DB_AppForm
+
 }
