@@ -15,12 +15,12 @@ import java.sql.SQLException;
 public class DB_Con {
     
      public static Connection getConnection() throws SQLException {
-        String dbPr = System.getenv("dvdrentalDB_PROTO");
-        String dbHo = System.getenv("dvdrentalDB_HOST");
-        String dbPo = System.getenv("dvdrentalDB_PORT");
-        String dbName = System.getenv("dvdrentalDB_NAME");
-        String dbUser = System.getenv("dvdrentalDB_USERNAME");
-        String dbPw = System.getenv("dvdrentalDB_PASSWORD");
+        String dbPr = System.getenv("DB_PROTO");
+        String dbHo = System.getenv("DB_HOST");
+        String dbPo = System.getenv("DB_PORT");
+        String dbName = System.getenv("DB_NAME");
+        String dbUser = System.getenv("DB_USERNAME");
+        String dbPw = System.getenv("DB_PASSWORD");
         String jdb = String.format("jdbc:%s://%s:%s/%s", dbPr, dbHo, dbPo, dbName);
 
         try {

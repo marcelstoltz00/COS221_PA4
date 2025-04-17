@@ -15,12 +15,18 @@
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>${packageClassName}</exec.mainClass>
                 <exec.executable>java</exec.executable>
-                <Env.dvdrentalDB_PROTO>mariadb</Env.dvdrentalDB_PROTO>
-                <Env.dvdrentalDB_HOST>localhost</Env.dvdrentalDB_HOST>
-                <Env.dvdrentalDB_PORT>3306</Env.dvdrentalDB_PORT>
-                <Env.dvdrentalDB_NAME>u24566552_u24564584_northwind</Env.dvdrentalDB_NAME>
-                <Env.dvdrentalDB_USERNAME>ms_root</Env.dvdrentalDB_USERNAME>
-                <Env.dvdrentalDB_PASSWORD>N4S</Env.dvdrentalDB_PASSWORD>
+                <Env.DB_PROTO>mariadb</Env.DB_PROTO>
+                <Env.DB_HOST>localhost</Env.DB_HOST>
+                <Env.DB_PORT>3306</Env.DB_PORT>
+                <Env.DB_NAME>u24566552_u24564584_northwind</Env.DB_NAME>
+                <Env.DB_USERNAME>ms_root</Env.DB_USERNAME>
+                <Env.DB_PASSWORD>N4S</Env.DB_PASSWORD>
+                
+                
+                
+                
+                
+                
             </properties>
         </action>
     </actions>
