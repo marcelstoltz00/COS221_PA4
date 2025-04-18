@@ -626,6 +626,7 @@ public class DB_AppForm extends javax.swing.JFrame {
     UIManager.put("Button.font", defaultFont);
     UIManager.put("Table.font", defaultFont);
     //.........................................................
+    //made comment change here
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
