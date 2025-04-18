@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
+            </goals>
+            <properties>
+                <exec.vmArgs></exec.vmArgs>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.appArgs></exec.appArgs>
+                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.executable>java</exec.executable>
+                <Env.dvdrental_DB_PROTO>mariadb</Env.dvdrental_DB_PROTO>
+                <Env.dvdrental_DB_HOST>localhost</Env.dvdrental_DB_HOST>
+                <Env.dvdrental_DB_PORT>3306</Env.dvdrental_DB_PORT>
+                <Env.dvdrental_DB_NAME>u24566552_u24564584_northwind</Env.dvdrental_DB_NAME>
+                <Env.dvdrental_DB_USERNAME>root</Env.dvdrental_DB_USERNAME>
+                <Env.dvdrental_DB_PASSWORD>K1llaman@72005</Env.dvdrental_DB_PASSWORD>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            </properties>
+        </action>
+    </actions>
